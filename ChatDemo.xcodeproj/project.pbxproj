@@ -7,14 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D8656C7A2D79F18F000DA0A4 /* Home in Frameworks */ = {isa = PBXBuildFile; productRef = D8656C792D79F18F000DA0A4 /* Home */; };
+		D86DA97E2EE6C5D100105035 /* MQTTNIO in Frameworks */ = {isa = PBXBuildFile; productRef = D86DA97D2EE6C5D100105035 /* MQTTNIO */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		D8656C652D79ECDC000DA0A4 /* ChatDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8656C772D79ED84000DA0A4 /* Home */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Home; sourceTree = "<group>"; };
-		D8656C872D79F9CC000DA0A4 /* Room */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Room; sourceTree = "<group>"; };
-		D8FA1BD82D7DAECF004D216A /* MQTTManager */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MQTTManager; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -30,7 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D8656C7A2D79F18F000DA0A4 /* Home in Frameworks */,
+				D86DA97E2EE6C5D100105035 /* MQTTNIO in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,9 +37,6 @@
 		D8656C5C2D79ECDC000DA0A4 = {
 			isa = PBXGroup;
 			children = (
-				D8FA1BD82D7DAECF004D216A /* MQTTManager */,
-				D8656C872D79F9CC000DA0A4 /* Room */,
-				D8656C772D79ED84000DA0A4 /* Home */,
 				D8656C672D79ECDC000DA0A4 /* Sources */,
 				D8656C782D79F18F000DA0A4 /* Frameworks */,
 				D8656C662D79ECDC000DA0A4 /* Products */,
@@ -84,7 +78,7 @@
 			);
 			name = ChatDemo;
 			packageProductDependencies = (
-				D8656C792D79F18F000DA0A4 /* Home */,
+				D86DA97D2EE6C5D100105035 /* MQTTNIO */,
 			);
 			productName = ChatDemo;
 			productReference = D8656C652D79ECDC000DA0A4 /* ChatDemo.app */;
@@ -115,6 +109,7 @@
 			mainGroup = D8656C5C2D79ECDC000DA0A4;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				D86DA97C2EE6C5D100105035 /* XCRemoteSwiftPackageReference "mqtt-nio" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D8656C662D79ECDC000DA0A4 /* Products */;
@@ -339,10 +334,22 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		D86DA97C2EE6C5D100105035 /* XCRemoteSwiftPackageReference "mqtt-nio" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/swift-server-community/mqtt-nio.git";
+			requirement = {
+				kind = exactVersion;
+				version = 2.12.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
-		D8656C792D79F18F000DA0A4 /* Home */ = {
+		D86DA97D2EE6C5D100105035 /* MQTTNIO */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Home;
+			package = D86DA97C2EE6C5D100105035 /* XCRemoteSwiftPackageReference "mqtt-nio" */;
+			productName = MQTTNIO;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
