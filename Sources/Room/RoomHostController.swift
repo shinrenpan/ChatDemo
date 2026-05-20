@@ -1,23 +1,19 @@
-//
-//  RoomViewController.swift
-//  ChatDemo
-//
-//  Created by Joe Pan on 2025/12/8.
-//
-
 import SwiftUI
 
-final class RoomViewController: UIHostingController<RoomView> {
+@MainActor
+final class RoomHostController: UIHostingController<RoomView> {
   private let viewModel: RoomViewModel
 
   init(viewModel: RoomViewModel) {
     self.viewModel = viewModel
-    let view = RoomView(viewModel: viewModel)
-    super.init(rootView: view)
+    super.init(rootView: RoomView(viewModel: viewModel))
   }
-  
-  required dynamic init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
+
+  @available(*, unavailable)
+  required init?(coder: NSCoder) { fatalError() }
+
+  override func viewDidLoad() {
+    super.viewDidLoad()
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -29,4 +25,10 @@ final class RoomViewController: UIHostingController<RoomView> {
     super.viewDidDisappear(animated)
     Task { await viewModel.doAction(.view(.onDisappear)) }
   }
+}
+
+// MARK: - Router
+
+private extension RoomHostController {
+  func handleRouter(_ router: RoomViewModel.Router) {}
 }

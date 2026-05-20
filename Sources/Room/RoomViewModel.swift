@@ -1,31 +1,26 @@
-//
-//  RoomViewModel.swift
-//  ChatDemo
-//
-//  Created by Joe Pan on 2025/12/8.
-//
-
 import Foundation
 import Observation
-import SwiftUI
+import Combine
 
-@MainActor
 @Observable
-
-final class RoomViewModel: ViewModel {
-  enum Action: Equatable, Sendable {
+@MainActor
+final class RoomViewModel {
+  enum Action: Sendable {
     case view(ViewAction)
   }
 
-  enum Callback: Equatable, Sendable {}
-
-  @ObservationIgnored
-  var onAction: (@MainActor (Action) -> Void)?
-
-  @ObservationIgnored
-  var onCallback: (@MainActor (Callback) -> Void)?
-
   var state: State
+
+  @ObservationIgnored
+  var onRoute: (@MainActor (Router) -> Void)?
+
+  @ObservationIgnored
+  private var cancellable: AnyCancellable?
+
+  init(userName: String) {
+    self.state = .init(user: .init(name: userName))
+    setupCancellable()
+  }
 
   func doAction(_ action: Action) async {
     switch action {
@@ -33,23 +28,12 @@ final class RoomViewModel: ViewModel {
       await handleViewAction(action)
     }
   }
-
-  init(userName: String) {
-    self.state = .init(user: .init(name: userName))
-
-    state.cancellable = NotificationCenter.default
-      .publisher(for: .MQTTReceivedMessage)
-      .receive(on: DispatchQueue.main)
-      .sink { [weak self] notify in
-        self?.handleReceiveMessage(notify: notify)
-      }
-  }
 }
 
 // MARK: - View Action
 
 extension RoomViewModel {
-  enum ViewAction: Equatable, Sendable {
+  enum ViewAction: Sendable {
     case onAppear
     case onDisappear
     case sendDidTap
@@ -61,38 +45,44 @@ extension RoomViewModel {
       do {
         try await MQTTManager.shared.connect(userId: state.user.id)
         state.mqttState = .connected
-      }
-      catch {
+      } catch {
         state.mqttState = .failed
       }
 
     case .onDisappear:
-      do {
-        try await MQTTManager.shared.disconnect()
-      }
-      catch {
-
-      }
+      try? await MQTTManager.shared.disconnect()
 
     case .sendDidTap:
-      if !state.sendText.isEmpty {
-        do {
-          try await MQTTManager.shared.send(message: .init(userId: state.user.id, userName: state.user.name, content: state.sendText))
-          state.sendText = ""
-        }
-        catch {
-
-        }
-      }
+      guard !state.sendText.isEmpty else { return }
+      do {
+        try await MQTTManager.shared.send(message: .init(userId: state.user.id, userName: state.user.name, content: state.sendText))
+        state.sendText = ""
+      } catch {}
     }
   }
 }
 
+// MARK: - Router
+
+extension RoomViewModel {
+  enum Router: Sendable {}
+}
+
+// MARK: - Private
+
 private extension RoomViewModel {
+  func setupCancellable() {
+    cancellable = NotificationCenter.default
+      .publisher(for: .MQTTReceivedMessage)
+      .receive(on: DispatchQueue.main)
+      .sink { [weak self] notify in
+        self?.handleReceiveMessage(notify: notify)
+      }
+  }
+
   func handleReceiveMessage(notify: Notification) {
-    guard let data = notify.object as? Data else { return }
-    guard let message = try? JSONDecoder().decode(Message.self, from: data) else { return }
-    let displayMessage = DisplayMessage(message: message, myId: state.user.id)
-    state.messages.append(displayMessage)
+    guard let data = notify.object as? Data,
+          let message = try? JSONDecoder().decode(Message.self, from: data) else { return }
+    state.messages.append(DisplayMessage(message: message, myId: state.user.id))
   }
 }

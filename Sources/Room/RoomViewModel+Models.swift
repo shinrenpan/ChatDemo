@@ -1,40 +1,31 @@
-//
-//  RoomViewModel+Model.swift
-//  ChatDemo
-//
-//  Created by Joe Pan on 2025/12/8.
-//
-
 import Foundation
-import Combine
+
+// MARK: - State
 
 extension RoomViewModel {
-  struct State: Equatable {
+  struct State: Sendable {
     let user: User
     var messages: [DisplayMessage] = []
     var sendText: String = ""
-    var cancellable : AnyCancellable?
     var mqttState: MQTTState = .connecting
   }
 }
 
+// MARK: - Domain Models
+
 extension RoomViewModel {
-  enum MQTTState: Equatable {
+  enum MQTTState: Sendable {
     case connecting
     case connected
     case failed
   }
-}
 
-extension RoomViewModel {
-  struct User: Equatable, Identifiable {
+  struct User: Identifiable, Sendable {
     let id = UUID().uuidString
     let name: String
   }
-}
 
-extension RoomViewModel {
-  struct Message: Codable {
+  struct Message: Codable, Sendable {
     let id: String
     let userId: String
     let userName: String
@@ -47,20 +38,18 @@ extension RoomViewModel {
       self.content = content
     }
   }
-}
 
-extension RoomViewModel {
-  struct DisplayMessage: Equatable, Identifiable {
+  struct DisplayMessage: Identifiable, Sendable {
     let id: String
     let name: String
     let content: String
     let fromMe: Bool
 
     init(message: Message, myId: String) {
-        self.id = message.id
-        self.fromMe = message.userId == myId
-        self.name = fromMe ? "我" : message.userName
-        self.content = message.content
+      self.id = message.id
+      self.fromMe = message.userId == myId
+      self.name = fromMe ? "我" : message.userName
+      self.content = message.content
     }
   }
 }

@@ -1,0 +1,51 @@
+name: ChatDemo
+options:
+  bundleIdPrefix: com.shinrenpan
+  deploymentTarget:
+    iOS: "18.2"
+packages:
+  MQTTNIO:
+    url: https://github.com/swift-server-community/mqtt-nio.git
+    from: 2.12.1
+  Logging:
+    url: https://github.com/apple/swift-log.git
+    from: 1.6.2
+  NIOTransportServices:
+    url: https://github.com/apple/swift-nio-transport-services.git
+    from: 1.23.1
+targets:
+  ChatDemo:
+    type: application
+    platform: iOS
+    sources: [Sources]
+    info:
+      path: Sources/Info.plist
+      properties:
+        UILaunchStoryboardName: Launch
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+          UISceneConfigurations:
+            UIWindowSceneSessionRoleApplication:
+              - UISceneConfigurationName: Default Configuration
+                UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
+    dependencies:
+      - package: MQTTNIO
+        product: MQTTNIO
+      - package: Logging
+        product: Logging
+      - package: NIOTransportServices
+        product: NIOTransportServices
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shinrenpan.ChatDemo
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SWIFT_STRICT_CONCURRENCY: targeted
